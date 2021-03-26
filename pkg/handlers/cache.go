@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CacheGET Handler for GET /v1/cache/:domain fetches info about requested domain
 // @Summary Cache get route
 // @Description "Route for checking if cache exists and returing value of it"
 // @ID caches.GET
@@ -22,7 +23,6 @@ import (
 // @Failure 404 {object} models.CacheEndpointResponseGET
 // @Failure 500 {object} models.CacheEndpointResponseGET
 // @Router /cache/{domain} [get]
-
 func CacheGET(c *gin.Context, cachePath string) {
 	// Validate request by calling is isRequestValid and passing context
 	if isRequestValid(c) {
@@ -43,9 +43,7 @@ func CacheGET(c *gin.Context, cachePath string) {
 	}
 }
 
-// Handler for DELETE /v1/cache/:domain that deletes contents of cache folder
-// User middleware checkContentType, checkAPIKey and checkDomainName on this call
-
+// CacheDELETE Handler for DELETE /v1/cache/:domain deletes cache folder content for requested domain
 // @Summary Cache delete route
 // @Description "Route that tries to delete cahce folder for given domain"
 // @ID caches.DELETE

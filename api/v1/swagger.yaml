@@ -1,9 +1,30 @@
 basePath: /
 definitions:
-  models.PingEndpointResponse:
+  models.CacheEndpointResponseDELETE:
     properties:
+      domain:
+        example: www.domain.tld
+        type: string
+      msg:
+        example: cache_folder_not_found
+        type: string
       status:
-        example: success
+        example: error
+        type: string
+    type: object
+  models.CacheEndpointResponseGET:
+    properties:
+      cacheSize:
+        example: 1024
+        type: number
+      domain:
+        example: www.domain.tld
+        type: string
+      msg:
+        example: cache_folder_not_found
+        type: string
+      status:
+        example: error
         type: string
     type: object
 host: localhost:5000
@@ -16,18 +37,67 @@ info:
   title: nginx-restapi-cache-purge
   version: 0.0.1
 paths:
-  /ping:
-    get:
+  /cache/{domain}:
+    delete:
       consumes:
-      - text/plain
-      description: '""'
-      operationId: ping.GET
+      - application/json
+      description: '"Route that tries to delete cahce folder for given domain"'
+      operationId: caches.DELETE
+      parameters:
+      - description: Domain
+        in: path
+        name: domain
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.PingEndpointResponse'
-      summary: Basic healthcheck route
+            $ref: '#/definitions/models.CacheEndpointResponseDELETE'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseDELETE'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseDELETE'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseDELETE'
+      summary: Cache delete route
+    get:
+      consumes:
+      - application/json
+      description: '"Route for checking if cache exists and returing value of it"'
+      operationId: caches.GET
+      parameters:
+      - description: Domain
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseGET'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseGET'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseGET'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.CacheEndpointResponseGET'
+      summary: Cache get route
 swagger: "2.0"

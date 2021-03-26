@@ -26,22 +26,95 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ping": {
+        "/cache/{domain}": {
             "get": {
-                "description": "\"\"",
+                "description": "\"Route for checking if cache exists and returing value of it\"",
                 "consumes": [
-                    "text/plain"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Basic healthcheck route",
-                "operationId": "ping.GET",
+                "summary": "Cache get route",
+                "operationId": "caches.GET",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Domain",
+                        "name": "domain",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.PingEndpointResponse"
+                            "$ref": "#/definitions/models.CacheEndpointResponseGET"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseGET"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseGET"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseGET"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "\"Route that tries to delete cahce folder for given domain\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Cache delete route",
+                "operationId": "caches.DELETE",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Domain",
+                        "name": "domain",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseDELETE"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseDELETE"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseDELETE"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.CacheEndpointResponseDELETE"
                         }
                     }
                 }
@@ -49,12 +122,41 @@ var doc = `{
         }
     },
     "definitions": {
-        "models.PingEndpointResponse": {
+        "models.CacheEndpointResponseDELETE": {
             "type": "object",
             "properties": {
+                "domain": {
+                    "type": "string",
+                    "example": "www.domain.tld"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "cache_folder_not_found"
+                },
                 "status": {
                     "type": "string",
-                    "example": "success"
+                    "example": "error"
+                }
+            }
+        },
+        "models.CacheEndpointResponseGET": {
+            "type": "object",
+            "properties": {
+                "cacheSize": {
+                    "type": "number",
+                    "example": 1024
+                },
+                "domain": {
+                    "type": "string",
+                    "example": "www.domain.tld"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "cache_folder_not_found"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "error"
                 }
             }
         }
