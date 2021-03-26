@@ -1,22 +1,47 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Repository containing simple API for deleting Nginx cache via HTTP calls",
-        "title": "nginx-restapicache-purge",
-        "contact": {},
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        "description": "A simple API for deleting Nginx cache via HTTP calls. It enables you to get status and size of cache for certian domain and also delete cache for that domain",
+        "title": "nginx-restapi-cache-purge",
+        "contact": {
+            "email": "miroslav.safaric@gmail.com"
         },
-        "version": "0.1"
+        "version": "0.0.1"
     },
-    "basePath": "/v1",
-    "paths": {},
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
+    "host": "localhost:5000",
+    "basePath": "/",
+    "paths": {
+        "/ping": {
+            "get": {
+                "description": "\"\"",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Basic healthcheck route",
+                "operationId": "ping.GET",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PingEndpointResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.PingEndpointResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package main
+package handlers
 
 import (
 	"errors"
@@ -11,12 +11,77 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Cache get route
+// @Description "Route for checking if cache exists and returing value of it"
+// @ID caches.GET
+// @Accept  application/json
+// @Produce  application/json
+// @Param domain path string true "Domain"
+// @Success 200 {object} models.CacheEndpointResponseGET
+// @Failure 400 {object} models.CacheEndpointResponseGET
+// @Failure 404 {object} models.CacheEndpointResponseGET
+// @Failure 500 {object} models.CacheEndpointResponseGET
+// @Router /cache/{domain} [get]
+
+func CacheGET(c *gin.Context, cachePath string) {
+	// Validate request by calling is isRequestValid and passing context
+	if isRequestValid(c) {
+		// If request is valid, try to find cache folder
+		cacheSize, err := checkCache(cachePath, c.Param("domain"))
+		if err != nil {
+			// If we fail to get chache folder info, we are returning error that caused cache not beeing deleted
+			if err.Error() == "cache_folder_not_found" {
+				c.JSON(http.StatusNotFound, gin.H{"status": "error", "domain": c.Param("domain"), "msg": err.Error(), "cache_size": 0})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "domain": c.Param("domain"), "msg": err.Error(), "cache_size": 0})
+			}
+		} else {
+			// If cache lookup was successfull, we return cache size and 200
+			c.JSON(http.StatusOK, gin.H{"status": "success", "domain": c.Param("domain"), "cache_size": cacheSize})
+		}
+
+	}
+}
+
+// Handler for DELETE /v1/cache/:domain that deletes contents of cache folder
+// User middleware checkContentType, checkAPIKey and checkDomainName on this call
+
+// @Summary Cache delete route
+// @Description "Route that tries to delete cahce folder for given domain"
+// @ID caches.DELETE
+// @Accept  application/json
+// @Produce  application/json
+// @Param domain path string true "Domain"
+// @Success 200 {object} models.CacheEndpointResponseDELETE
+// @Failure 400 {object} models.CacheEndpointResponseDELETE
+// @Failure 404 {object} models.CacheEndpointResponseDELETE
+// @Failure 500 {object} models.CacheEndpointResponseDELETE
+// @Router /cache/{domain} [delete]
+func CacheDelete(c *gin.Context, cachePath string) {
+	if isRequestValid(c) {
+		// If request is valid, try to delete cache
+		err := deleteCache(cachePath, c.Param("domain"))
+		if err != nil {
+			// If we fail to delete cache, we are returning error that caused cache not beeing deleted
+			if err.Error() == "cache_folder_not_found" {
+				c.JSON(http.StatusNotFound, gin.H{"status": "error", "domain": c.Param("domain"), "msg": err.Error()})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"status": "error", "domain": c.Param("domain"), "msg": err.Error()})
+			}
+		} else {
+			// If deletion was successfull, we return 200
+			c.JSON(http.StatusOK, gin.H{"status": "success", "domain": c.Param("domain"), "msg": "cache_purged"})
+		}
+
+	}
+}
+
 /* checkCache is a function that check if cache folder is present and returns its size
 Args: domain (string) - domain name for which we check if cache exists
 Returns: cacheSize (float32) - size of cache in MB
          err - error that gets returned to client
 */
-func checkCache(domain string) (cacheSize float32, err error) {
+func checkCache(cachePath string, domain string) (cacheSize float32, err error) {
 	// Create variable that contains full path to cache
 	pathToCache := cachePath + domain
 
@@ -57,7 +122,7 @@ func checkCache(domain string) (cacheSize float32, err error) {
 Args: domain (string) - domain name for which we delete cache
 Returns: err - error that gets returned to client if deletion was unsucessfull
 */
-func deleteCache(domain string) (err error) {
+func deleteCache(cachePath string, domain string) (err error) {
 	// Create variable that contains full path to cache
 	pathToCache := cachePath + domain
 
@@ -78,6 +143,10 @@ func deleteCache(domain string) (err error) {
 
 	// If cache folder exists, we need delete all contents of the direcotry
 	cacheDir, err := ioutil.ReadDir(pathToCache)
+	if err != nil {
+		return err
+	}
+
 	for _, d := range cacheDir {
 		os.RemoveAll(path.Join([]string{pathToCache, d.Name()}...))
 	}
@@ -85,7 +154,7 @@ func deleteCache(domain string) (err error) {
 	return nil
 }
 
-/* exists returns whether the given directory exists
+/* Exists returns whether the given directory exists
 Args: path (string) - path to given file
 Returns: bool - if path is found and it's a folder, we return true
          err  - if there has been an error in opening files, we return that error

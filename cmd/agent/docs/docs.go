@@ -25,40 +25,7 @@ var doc = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {
-        "/ping": {
-            "get": {
-                "description": "\"\"",
-                "consumes": [
-                    "text/plain"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Basic healthcheck route",
-                "operationId": "ping.GET",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.PingEndpointResponse"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "models.PingEndpointResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string",
-                    "example": "success"
-                }
-            }
-        }
-    }
+    "paths": {}
 }`
 
 type swaggerInfo struct {

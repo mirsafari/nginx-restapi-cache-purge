@@ -1,17 +1,33 @@
-basePath: /v1
+basePath: /
+definitions:
+  models.PingEndpointResponse:
+    properties:
+      status:
+        example: success
+        type: string
+    type: object
+host: localhost:5000
 info:
-  contact: {}
-  description: Repository containing simple API for deleting Nginx cache via HTTP
-    calls
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: nginx-restapicache-purge
-  version: "0.1"
-paths: {}
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
+  contact:
+    email: miroslav.safaric@gmail.com
+  description: A simple API for deleting Nginx cache via HTTP calls. It enables you
+    to get status and size of cache for certian domain and also delete cache for that
+    domain
+  title: nginx-restapi-cache-purge
+  version: 0.0.1
+paths:
+  /ping:
+    get:
+      consumes:
+      - text/plain
+      description: '""'
+      operationId: ping.GET
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PingEndpointResponse'
+      summary: Basic healthcheck route
 swagger: "2.0"

@@ -1,0 +1,14 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A simple API for deleting Nginx cache via HTTP calls. It enables you to get status and size of cache for certian domain and also delete cache for that domain",
+        "title": "nginx-restapi-cache-purge",
+        "contact": {
+            "email": "miroslav.safaric@gmail.com"
+        },
+        "version": "0.0.1"
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "paths": {}
+}
