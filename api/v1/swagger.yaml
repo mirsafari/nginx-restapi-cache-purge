@@ -1,0 +1,17 @@
+basePath: /v1
+info:
+  contact: {}
+  description: Repository containing simple API for deleting Nginx cache via HTTP
+    calls
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: nginx-restapicache-purge
+  version: "0.1"
+paths: {}
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

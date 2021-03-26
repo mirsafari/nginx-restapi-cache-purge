@@ -15,6 +15,15 @@ func getRoutes() {
 }
 
 // Simple handler for /v1/ping route that returns success. Since this is only a healthcheck endpoint, we dont put it in another file
+// HealthcheckRoute godoc
+// @Summary Healthcheck
+// @Description Simple healthcheck
+// @ID get-string-by-int
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Account ID"
+// @Success 200
+// @Header 200 {string} Token "qwerty"
 func addHealthceckRoute(rg *gin.RouterGroup) {
 	ping := rg.Group("/ping")
 
