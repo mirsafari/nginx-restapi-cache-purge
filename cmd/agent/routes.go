@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	validate "github.com/mirsafari/nginx-restapi-cache-purge/pkg/validation"
 )
 
 // Function that defines router groups. Currently we only have /v1 and are calling functions to add subroutes under v1
@@ -28,7 +29,7 @@ func addCacheRoute(rg *gin.RouterGroup) {
 
 	// Handler for GET /v1/cache/:domain that check if cache for domain exists and returns cache size
 	// User middleware checkContentType, checkAPIKey and checkDomainName on this call
-	caches.GET("/:domain", checkContentType(), checkAPIKey(APIKey), checkDomainName(), func(c *gin.Context) {
+	caches.GET("/:domain", validate.CheckContentType(), validate.CheckAPIKey(APIKey), validate.CheckDomainName(), func(c *gin.Context) {
 		// Validate request by calling is isRequestValid and passing context
 		if isRequestValid(c) {
 			// If request is valid, try to find cache folder
@@ -50,7 +51,7 @@ func addCacheRoute(rg *gin.RouterGroup) {
 
 	// Handler for DELETE /v1/cache/:domain that deletes contents of cache folder
 	// User middleware checkContentType, checkAPIKey and checkDomainName on this call
-	caches.DELETE("/:domain", checkContentType(), checkAPIKey(APIKey), checkDomainName(), func(c *gin.Context) {
+	caches.DELETE("/:domain", validate.CheckContentType(), validate.CheckAPIKey(APIKey), validate.CheckDomainName(), func(c *gin.Context) {
 		if isRequestValid(c) {
 			// If request is valid, try to delete cache
 			err := deleteCache(c.Param("domain"))

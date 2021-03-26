@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func checkContentType() gin.HandlerFunc {
+func CheckContentType() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.ContentType() == "application/json" {
 			c.Set("IsContentTypeValid", true)
@@ -17,7 +17,7 @@ func checkContentType() gin.HandlerFunc {
 	}
 }
 
-func checkAPIKey(apiKey string) gin.HandlerFunc {
+func CheckAPIKey(apiKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.GetHeader("APIKEY") == apiKey {
 			c.Set("IsAuthorized", true)
@@ -27,7 +27,7 @@ func checkAPIKey(apiKey string) gin.HandlerFunc {
 	}
 }
 
-func checkDomainName() gin.HandlerFunc {
+func CheckDomainName() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		RegExp := regexp.MustCompile(`^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z
 			]{2,3})$`)
